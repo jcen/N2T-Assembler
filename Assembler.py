@@ -1,5 +1,7 @@
 # Assembler for NAND to Tetris
 
+import os
+
 # TODO add whitelist
 
 ROMaddr = 0
@@ -21,7 +23,9 @@ compcodes = {"0":"101010", "1":"111111", "-1":"111010",
              "D|A":"010101", "D|M":"010101"}
 
 # picking out the target file name
-source = "Max.asm"
+source = input("Source .asm file to translate:")
+
+os.path.isfile('./file.txt')
 base = source[:source.rfind(".asm")]
 target = base + ".hack"
 
@@ -70,23 +74,21 @@ with open(source) as f:
             line = line[1:]
 
             # handle symbols in a more sane way
-            #removes R from R addresses, replaces symbols w/ their value in the dict
+            # removes R from R addresses, replaces symbols w/ their value in the dict
             if not line.isdecimal():
-                if line[0] == "R":
-                    if int(line[1:]) <= 15:
+                if line[0] == "R" and type(line[1:]) is int:
+                    if line[1:] <= 15:
                         line = line[1:]
                 # gives new variables a value, starting at 16
                 elif line not in symbols:
                     symbols[line] = (16+totalusersymbols)
                     line = symbols[line]
                     totalusersymbols += 1
-
                 elif line in symbols:
                     line = symbols[line]
 
             # convert decimal to binary
-            if str(line).isdecimal():
-                line = "{0:b}".format(int(line))
+            line = "{0:b}".format(int(line))
 
             # ensures our number is 15 bits long
             while len(str(line)) + 1 <= 16:
